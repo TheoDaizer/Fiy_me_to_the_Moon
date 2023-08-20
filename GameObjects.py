@@ -131,6 +131,8 @@ class Ammo(MovingSprite, CollisionMixin, SoundMixin):
                     outher='n',
                     random_pos='x')
 
+class MainMenu(MovingSprite):
+    pass
 
 if __name__ == '__main__':
     pass

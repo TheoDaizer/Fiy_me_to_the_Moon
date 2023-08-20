@@ -1,4 +1,7 @@
 import sys
+
+import pygame.font
+
 from GameObjects import *
 from Enemies import *
 from SFX import *
@@ -31,20 +34,24 @@ if __name__ == '__main__':
     pygame.init()
     mainClock = pygame.time.Clock()
     windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    pygame.display.set_caption('Полет Оружейного Барона')
+    pygame.display.set_caption('Fly Me to the Moon')
     pygame.mouse.set_visible(False)
     baddieAddCounter = 0
 
     # Настройка звуков.
     gameOverSound = pygame.mixer.Sound('sounds/effects/gameover.mp3')
     engineSound = pygame.mixer.Sound('sounds/effects/engine.mp3')
-    pygame.mixer.music.load('sounds/music/Flight of the Valkyries (Wrestling Theme) (8 Bit Version) (128 kbps).mp3')
+    pygame.mixer.music.load('sounds/music/16-voyager.mp3')
 
     # Настройка шрифтов.
-    font = pygame.font.SysFont(None, 35)
+    font = pygame.font.Font('fonts/Rafiquell.ttf', 30)
+    font60 = pygame.font.Font('fonts/Rafiquell.ttf', 60)
 
     # Вывод начального экрана.
     windowSurface.fill(BACKGROUNDCOLOR)
+
+    MainMenu.set_sprites('sprites/main/main_menu0.jpg')
+    main_menu = MainMenu(windowSurface, coordinates=(-200, 0))
 
     Land.set_sprites('sprites/land/land0.png')
     lands = [Land.getLand(windowSurface)]
@@ -90,9 +97,11 @@ if __name__ == '__main__':
     to_draw = [lands, b_clouds, enemies, ammo, shoots, player_plane, bullets, explosions, stick_expls, clouds]
 
     # Подготовка начального экрана
+    pygame.mixer.music.play(-1, 0.0)
     lands[0].blit_sprite()
-    drawText('Полет Оружейного Барона', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
-    drawText('Нажмите клавишу для начала игры', font, windowSurface, (WINDOWWIDTH / 5) - 30,
+    main_menu.blit_sprite()
+    drawText('Fly Me to the Moon', font60, windowSurface, (WINDOWWIDTH / 10), (WINDOWHEIGHT / 4))
+    drawText('Press any key', font, windowSurface, (WINDOWWIDTH / 3),
              (WINDOWHEIGHT / 3) + 50)
     pygame.display.update()
     waitForPlayerToPressKey()
@@ -100,6 +109,7 @@ if __name__ == '__main__':
     score = 0
     topScore = 0
     while True:
+        pygame.mixer.music.load('sounds/music/04-wicked-child.mp3')
         #Начало новой игры
         enemies.clear()
         clouds.clear()
@@ -185,7 +195,7 @@ if __name__ == '__main__':
             if random.random() >= 0.999:
                 ammo.append(Ammo.getAmmo(windowSurface))
 
-            if len(clouds + b_clouds) < 4 and random.random() >= 0.995:
+            if len(clouds + b_clouds) < 1 and random.random() >= 0.995:
                 c = random.choice([clouds, b_clouds])
                 c.append(Cloud.getCloud(windowSurface))
 
@@ -218,9 +228,9 @@ if __name__ == '__main__':
                     group.remove(object)
 
             # Отображение количества очков и лучшего результата.
-            drawText('Счет: %s' % (score), font, windowSurface, 10, 10)
-            drawText('Рекорд: %s' % (topScore), font, windowSurface, 10, 50)
-            drawText('AMMO %s' % (Bullet.get_ammo()), font, windowSurface, 450, 10)
+            drawText('Scote: {}'.format(score), font, windowSurface, 10, 10)
+            drawText('Top scort: {}'.format(topScore), font, windowSurface, 10, 50)
+            drawText('Ammo {}'.format(Bullet.get_ammo()), font, windowSurface, 450, 10)
 
             if pause:
                 waitForPlayerToPressKey()
@@ -261,9 +271,9 @@ if __name__ == '__main__':
         pygame.mixer.music.stop()
         gameOverSound.play()
 
-        drawText('ИГРА ОКОНЧЕНА!', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
-        drawText('Нажмите клавишу для начала новой игры', font, windowSurface, (WINDOWWIDTH / 3) - 120,
-                 (WINDOWHEIGHT / 3) + 50)
+        drawText('Game  Over', font60, windowSurface, (WINDOWWIDTH / 3)-40, (WINDOWHEIGHT / 4))
+        drawText('press any key to start new game', font, windowSurface, (WINDOWWIDTH / 8) + 20,
+                 (WINDOWHEIGHT / 3) + 100)
         pygame.display.update()
         waitForPlayerToPressKey()
 
